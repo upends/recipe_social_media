@@ -1,4 +1,6 @@
 from django.db import models
+from PIL import Image
+
 
 # Create your models here.
 from django.db import models
@@ -22,6 +24,18 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateField(auto_now=True)
     avg_rating = models.FloatField(default=0)
+    image_resized = models.BooleanField(default=False)
+    
+    def resize_image(self, percent):
+        if self.image:
+            img = Image.open(self.image)
+            width, height = img.size
+            new_width = int(width * percent / 100) 
+            new_height = int(height * percent / 100)
+            img = img.resize((new_width, new_height))
+            img.save(self.image.path)
+            self.image_resized = True
+            self.save()
     
     def __str__(self):
         return self.name
