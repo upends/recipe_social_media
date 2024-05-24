@@ -70,9 +70,9 @@
         <div class="row">
             {% for recipe in recipes %}
             <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="{{recipe.image.url}}" class="card-img-top" alt="{{ recipe.name }}">
-                    <div class="card-body">
+                <div class="card mb-4" style="display: flex; flex-direction: column; min-height: 350px;">
+                    <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.name }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body" style="flex-grow: 1;">
                         <h5 class="card-title">{{ recipe.name }}</h5>
                         <p class="card-text">{{ recipe.description }}</p>
                         <p class="card-text">Rating : {{ recipe.avg_rating|floatformat:"1" }}</p>
@@ -89,9 +89,9 @@
                 </div>
             </div>
             {% endfor %}
-            
         </div>
     </div>
+    
 
     <!-- Include Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
