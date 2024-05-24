@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 from datetime import timedelta
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,6 +99,14 @@ DATABASES = {
     }
 }
 
+# email credentials
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -162,8 +171,17 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 CELERY_BEAT_SCHEDULE = {
-    'run-every-minute': {
-        'task': 'recipes.tasks.my_periodic_task',
-        'schedule': 3.0,
+    'run-every-hour': {
+        'task': 'recipes.tasks.image_resize_task',
+        'schedule': 3600.0,
     },
+    # cron will run at 6 PM IST on weekdays
+    'run-daily-except-weekends': {
+        'task': 'recipes.tasks.server_status',
+        'schedule': crontab(minute=47, hour=10, day_of_week='1-5'),
+    },
+    'run-daily-job': {
+        'task': 'recipes.tasks.export_users_to_csv',
+        'schedule': crontab(minute=0, hour=3), 
+    }
 }
