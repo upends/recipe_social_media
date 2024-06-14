@@ -19,6 +19,9 @@ def home(request):
 
 @api_view(['POST'])
 def seller_registration_view(request):
+    """
+        this api is used to register sellers
+    """
     if request.method == 'POST':
         serializer = RecipeUserSerializer(data=request.data)
         if serializer.is_valid():
@@ -29,6 +32,9 @@ def seller_registration_view(request):
 
 @api_view(['POST'])
 def customer_registration_view(request):
+    """
+        this api alows customer to registers
+    """
     if request.method == 'POST':
         serializer = RecipeUserSerializer(data=request.data)
         if serializer.is_valid():
